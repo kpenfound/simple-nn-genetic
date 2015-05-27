@@ -2,19 +2,18 @@ package main
 
 import "math"
 import "math/rand"
-import "time"
 
 const neuralLayers = 2
 const outputNodes int = 1
 const middleNodes int = 3
 const inputNodes int = 2
 
+/*
+  Neural Network Factory
+  returns a neural network set up with the configured properties
+*/
 func SetupNeuralNetwork() NeuronNetwork {
   layerSizes := []int{inputNodes,middleNodes,outputNodes}
-  // Random seeder
-  t := time.Now().Unix()
-  seed := rand.NewSource((t % 100)+1)
-  rando := rand.New(seed)
 
   layers := make([]NeuronLayer, neuralLayers)
   for i := 1; i < len(layerSizes); i++ { // Start at 1, our inputs are not neural nodes
@@ -22,9 +21,9 @@ func SetupNeuralNetwork() NeuronNetwork {
     for k := 0; k < layerSizes[i]; k++ {
       weights := make([]float64, layerSizes[i-1])
       for j := 0; j < layerSizes[i-1]; j++ {
-        weights[j] = RandomWeight(rando)
+        weights[j] = RandomWeight()
       }
-      neurons[k] = Neuron{weights, RandomThreshold(rando), 0}
+      neurons[k] = Neuron{weights, RandomThreshold(), 0}
     }
     layers[i-1] = NeuronLayer{neurons}
   }
@@ -33,12 +32,12 @@ func SetupNeuralNetwork() NeuronNetwork {
   return network
 }
 
-func RandomWeight(randomGenerator *rand.Rand) float64 { // Between -1 and 1
-  return (randomGenerator.Float64() * 2) - 1
+func RandomWeight() float64 { // Between -1 and 1
+  return (rand.Float64() * 2) - 1
 }
 
-func RandomThreshold(randomGenerator *rand.Rand) float64 { // Between -2 and 2
-  return (randomGenerator.Float64() * 4) - 2
+func RandomThreshold() float64 { // Between -2 and 2
+  return (rand.Float64() * 4) - 2
 }
 
 // Neuron

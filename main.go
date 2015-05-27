@@ -2,6 +2,7 @@ package main
 
 import "fmt"
 import "math"
+import "math/rand"
 import "time"
 import "os"
 import "strconv"
@@ -10,14 +11,25 @@ func main() {
   var iterations int
   var mutationRate float64
   var e1, e2 error
-  mutationRate, e1 = strconv.ParseFloat(os.Args[len(os.Args) -2], 64)
-  iterations, e2 = strconv.Atoi(os.Args[len(os.Args) -1])
-  if e1 != nil || e2 != nil {
-    fmt.Println("Arguments parsing error")
+  // USAGE: command.go mutation_rate iterations
+  if(len(os.Args) < 3) {
+    fmt.Println("USAGE: command.go mutation_rate iterations")
+    mutationRate = 0.1;
+    iterations = 100;
+  } else {
+    mutationRate, e1 = strconv.ParseFloat(os.Args[len(os.Args) -2], 64)
+    iterations, e2 = strconv.Atoi(os.Args[len(os.Args) -1])
+    if e1 != nil || e2 != nil {
+      fmt.Println("Arguments parsing error")
+    }
   }
   inputs := []float64{1.1, 2.1}
   target := 3.4
   tests := 10
+
+  // Seed random generator
+  rand.Seed(time.Now().UTC().UnixNano()) // Seed the random generator /once/
+
 
   sum := 0.0
 
@@ -35,7 +47,6 @@ func main() {
       sum += math.Abs(res - target) / target
       fmt.Println("Result:",res)
     }
-    time.Sleep(time.Second * 1) // Sleeping for one second to ensure that our random seed is different from the previous test
   }
   avgErr := sum / float64(tests) // In the future, std deviation may be more useful
 
